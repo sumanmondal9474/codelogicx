@@ -4,6 +4,7 @@ const hapi = require("@hapi/hapi");
 const server = require("./config/server");
 const baseRouter = require("./route/router");
 const auth = require("./middleware/auth");
+const createUser = require("./controller/createUser");
 
 const init = async () => {
 
@@ -50,7 +51,14 @@ const init = async () => {
     //     Plugin: auth
     // })
 
+   
+    await server.register(require('hapi-auth-jwt2'));
+
+    auth(server)
+
     await server.register(baseRouter);
+
+    
 
 
     await server.start();

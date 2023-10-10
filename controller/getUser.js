@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 const getUser = async (request, h) => {
     try {
         const params = request.query;
-
+        console.log()
         // Use Prisma to query the database
         const infos = await prisma.user.findUnique({
             where: params, // Use the query parameters to filter the results

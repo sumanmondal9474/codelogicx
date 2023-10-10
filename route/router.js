@@ -13,16 +13,19 @@ const router = [
 
         method: 'POST',
         path: '/api/post',
+        config: { auth: false },
         handler: createUserController
     },
     {
         method: 'POST',
         path: '/login',
+        config: { auth: false },
         handler: login,
     },
     {
         method: 'GET',
         path: '/api/user',
+        config: { auth: 'jwt' },
         handler: getUserController
     },
     {
