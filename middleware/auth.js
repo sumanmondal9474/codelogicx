@@ -47,9 +47,9 @@ const prisma = new PrismaClient();
 
 
 // const HapiJwt = require('hapi-auth-jwt2');
-const secretKey = 'suman';
 
-const auth = (server) => {
+const secretKey = 'suman';
+const auth = async (server) => {
     //   await server.register(HapiJwt);
 
     server.auth.strategy('jwt', 'jwt', {

@@ -1,12 +1,9 @@
 'use strict';
 
-const hapi = require("@hapi/hapi");
-
 const { createUserController, login } = require('../controller/createUser');
-const getUserController = require('../controller/getUser');
+const { getUserController, getAllUserController } = require('../controller/getUser');
 const updateUserController = require('../controller/updateUser');
 const deleteUserController = require('../controller/deleteUser');
-const auth= require("../middleware/auth");
 
 const router = [
     {
@@ -29,13 +26,21 @@ const router = [
         handler: getUserController
     },
     {
+        method: 'GET',
+        path: '/api/users',
+        config: { auth: false },
+        handler: getAllUserController
+    },
+    {
         method: 'PUT',
         path: '/api/users/{id}',
+        config: { auth: 'jwt' },
         handler: updateUserController
     },
     {
         method: 'DELETE',
         path: '/api/user/{id}',
+        config: { auth: 'jwt' },
         handler: deleteUserController
     }
 
