@@ -1,10 +1,31 @@
 'use strict';
 
-const server = require("./config/server");
-const baseRouter = require("./route/router");
-const auth = require("./middleware/auth");
+const Inert = require('@hapi/inert');
+const Vision = require('@hapi/vision');
+const HapiSwagger = require('hapi-swagger');
+
+const server = require("./Config/server");
+const baseRouter = require("./Routes/index");
+const { auth } = require("./Middleware/auth");
+const Pack = require('./package.json');
 
 const init = async () => {
+
+    const swaggerOptions = {
+        info:{
+            title:'Test API Documentation',
+            version:Pack.version,
+        },
+        securityDefinitions: {
+            jwt: {
+                type: 'apiKey',
+                name: 'Authorization',
+                in: 'header'
+            }
+        },
+        security: [{ jwt: [] }],
+        schemes: ['http','https']
+    }
 
     server.route([
         {
@@ -12,27 +33,6 @@ const init = async () => {
             path: "/",
             handler: (request, h) => {
                 return "<h1>Hello World!</h1>"
-            }
-        },
-        {
-            method: "GET",
-            path: "/users/{soccer?}",
-            handler: (request, h) => {
-
-                if (request.params.soccer) {
-
-                    return `<h1>Hello ${request.params.soccer}</h1>`
-
-                } else {
-                    return `<h1>Hello Stranger!</h1>`
-                }
-            }
-        },
-        {
-            method: "GET",
-            path: "/admin/{name?}",
-            handler: (request, h) => {
-                return `<h1>Hello ${request.query.name}</h1>`
             }
         },
         {
@@ -47,6 +47,15 @@ const init = async () => {
     await server.register(require('hapi-auth-jwt2'));
 
     await auth(server);
+
+    await server.register([
+        Inert,
+        Vision,
+        {
+            plugin:HapiSwagger,
+            options:swaggerOptions
+        }
+    ])
 
     await server.register(baseRouter);
 
