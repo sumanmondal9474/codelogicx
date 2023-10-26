@@ -9,10 +9,11 @@ const {
     getUser,
     getAllUsers,
     updateUser,
-    deleteUser
+    deleteUser,
 } = require('../../Controller/user');
 
-const fileUpload= require("../../Controller/fileUploads.js")
+// const fileUpload= require("../../Controller/fileUploads.js")
+const {uploadImage,getImageLinks} = require("../../Controller/fileUploads.js")
 
 const router = [
     // {
@@ -119,33 +120,81 @@ const router = [
             }
         }
     },
+    // {
+    //     path: '/file-upload',
+    //     method: 'post',
+    //     options: {
+    //         payload: {
+    //             output: 'file',
+    //             multipart: true,
+    //             // maxBytes: 1024 * 1024, // Set a reasonable file size limit
+    //             parse: true,
+    //             allow: 'multipart/form-data',
+    //           },
+    //         auth: false,
+    //         handler: uploadImage,
+    //         description: "File upload",
+    //         notes: 'file-upload',
+    //         tags: ['api'],
+    //         plugins: {
+    //             'hapi-swagger': {
+    //                 payloadType: 'form'
+    //             }
+    //         },
+    //         validate: {
+    //             payload: Joi.object({
+    //                 file: Joi.any()
+    //                     .meta({ swaggerType: 'file' })
+    //                     .description('file')
+    //             })
+    //         },
+    //     }
+    // },
     {
         path: '/file-upload',
         method: 'post',
         options: {
-            payload: {
-                output: 'file',
-                multipart: true
+          auth: false, // Disable authentication if needed
+          handler: uploadImage,
+          description: 'File upload',
+          notes: 'Upload a file via POST request',
+          tags: ['api'],
+          plugins: {
+            'hapi-swagger': {
+              payloadType: 'form',
             },
-            auth: false,
-            handler: fileUpload,
-            description: "File upload",
-            notes: 'file-upload',
+          },
+          validate: {
+            payload: Joi.object({
+              file: Joi.any()
+                .meta({ swaggerType: 'file' })
+                .description('The uploaded file'),
+            }),
+          },
+          payload: {
+            output: 'stream', // Use 'file' to handle file uploads
+            multipart: true,
+            parse: true,
+            allow: 'multipart/form-data',
+          },
+        },
+      },
+    {
+        method: 'GET',
+        path: '/images/{filename}',
+        handler: getImageLinks,
+        options : {
+            description: "Get Image",
+            notes: 'Get-Image',
             tags: ['api'],
-            plugins: {
-                'hapi-swagger': {
-                    payloadType: 'form'
-                }
-            },
+            auth: false,
             validate: {
-                payload: Joi.object({
-                    file: Joi.any()
-                        .meta({ swaggerType: 'file' })
-                        .description('file')
-                })
-            },
+                params: Joi.object({
+                    filename: Joi.string().required()
+                }),
+            }
         }
-    }
+      }
 
 ];
 

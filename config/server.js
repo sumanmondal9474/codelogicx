@@ -1,5 +1,5 @@
 const hapi = require('@hapi/hapi');
-
+const path = require('path');
 const server = hapi.Server({
     host: "localhost",
     port: 8000,
@@ -11,6 +11,9 @@ const server = hapi.Server({
             additionalExposedHeaders: ['Accept'], // an array of additional exposed headers
             maxAge: 60,
             credentials: true // boolean - 'Access-Control-Allow-Credentials'
+        },
+        files: {
+            relativeTo: path.join(__dirname, '../Uploads')
         }
     }
 });

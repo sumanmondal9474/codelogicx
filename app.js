@@ -10,6 +10,7 @@ const { auth } = require("./Middleware/auth");
 const Pack = require('./package.json');
 
 const init = async () => {
+    await server.register(require('@hapi/inert'));
 
     const swaggerOptions = {
         info:{
@@ -45,6 +46,7 @@ const init = async () => {
     ]);
 
     await server.register(require('hapi-auth-jwt2'));
+    
 
     await auth(server);
 
