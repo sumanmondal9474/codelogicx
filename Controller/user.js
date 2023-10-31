@@ -2,7 +2,8 @@
 
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
-const bcrypt = require("bcrypt")
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 
 const createUser = async (request, h) => {
@@ -14,6 +15,28 @@ const createUser = async (request, h) => {
         });
 
         return h.response({ newUser, message: "success" }).code(201);
+
+    } catch (error) {
+        console.error(error);
+        return h.response({ status: 'error', message: 'Internal Server Error' }).code(500);
+    }
+}
+
+const login = async (request, h) => {
+    try {
+        const { email, password } = request.payload
+        const user = await prisma.user.findUnique({
+            where: {
+                email: email,
+            }
+        })
+        if (!user) {
+            return h.response({ status: 'error', message: 'user not available' }).code(404);
+
+        }
+        const token = jwt.sign({ userId: user.id }, "suman");
+
+        return h.response({ status: 'successfull', message: 'Token generated successfully', token }).code(200);
 
     } catch (error) {
         console.error(error);
@@ -100,5 +123,6 @@ module.exports = {
     getUser,
     getAllUsers,
     updateUser,
-    deleteUser
+    deleteUser,
+    login
 };

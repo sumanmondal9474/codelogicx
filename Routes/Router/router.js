@@ -2,14 +2,13 @@
 
 const Joi = require('joi');
 
-const { login } = require('../../Middleware/auth.js');
-
 const {
     createUser,
     getUser,
     getAllUsers,
     updateUser,
     deleteUser,
+    login
 } = require('../../Controller/user');
 
 // const fileUpload= require("../../Controller/fileUploads.js")
